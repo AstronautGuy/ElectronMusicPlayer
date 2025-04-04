@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electron Music Player</title>
+</head>
+<body>
+<h1>Music Player</h1>
+
+<!-- YouTube streaming -->
+<input id="url" placeholder="YouTube URL" style="width: 300px;" />
+<button id="play">Play</button>
+<audio id="audio" controls></audio>
+
+<!-- Playlist fetch -->
+<br><br>
+<button id="fetch-playlists">Fetch YT Music Playlists</button>
+<pre id="playlist-output" style="background:#eee; padding:10px;"></pre>
+
+<script>
+    const playBtn = document.getElementById("play");
+    const audioTag = document.getElementById("audio");
+    const urlInput = document.getElementById("url");
+    const fetchBtn = document.getElementById("fetch-playlists");
+    const output = document.getElementById("playlist-output");
+
+    playBtn.onclick = async () => {
+        const url = urlInput.value;
+        if (!url) return alert("Enter a YouTube URL first!");
+        const filePath = await window.ytAPI.streamAudio(url);
+        audioTag.src = `file://${filePath}`;
+        audioTag.play();
+    };
+
+    fetchBtn.onclick = async () => {
+        const playlists = await window.ytAPI.getPlaylists();
+        output.textContent = JSON.stringify(playlists, null, 2);
+    };
+</script>
+</body>
+</html>
